@@ -13,7 +13,7 @@ import { UsersDto } from './users.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '../auth/auth.guard';
 
-@Controller('user')
+@Controller('users')
 @UseGuards(new AuthGuard())
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
