@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import * as helmet from 'helmet';
-import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
 import * as compression from 'compression';
 
@@ -12,7 +11,6 @@ async function bootstrap() {
 
   //#region security middlewares
   app.use(helmet());
-  app.use(csurf());
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutes

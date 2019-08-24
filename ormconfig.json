@@ -4,7 +4,7 @@
   "port": 5432,
   "username": "postgres",
   "password": "",
-  "database": "nest",
+  "database": "postgres",
   "entities": ["src/**/**.entity{.ts,.js}"],
   "synchronize": false,
   "migrations": ["migration/*.ts"],
