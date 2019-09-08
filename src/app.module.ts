@@ -12,7 +12,7 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot(),
     GraphQLModule.forRoot({
       debug: false,
-      playground: process.env.PRODUCTION === 'false',
+      playground: true,
       typePaths: ['./**/*.graphql'],
       context: ({ req }) => ({ headers: req.headers }),
     }),
