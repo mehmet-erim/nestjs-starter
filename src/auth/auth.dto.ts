@@ -17,5 +17,12 @@ export namespace AuthDto {
 
   export interface JwtPayload {
     email: string;
+    id: string;
+  }
+
+  export interface Response {
+    accessToken: string;
+    expiresIn: Date;
+    tokenType: 'baerer';
   }
 }

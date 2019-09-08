@@ -11,10 +11,10 @@ import {
 import { CommonValidators } from '../shared';
 import { UsersDto } from './users.dto';
 import { UsersService } from './users.service';
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
-@UseGuards(new AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 

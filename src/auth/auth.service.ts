@@ -1,15 +1,18 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './auth.dto';
-import { tokenSign } from '../shared/utils';
+import { JwtService } from '@nestjs/jwt';
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async login({ email, password }: AuthDto.Login): Promise<{ token: string }> {
-    const user = await this.userService.findOneByEmail(email);
-
+  async login({ email, password }: AuthDto.Login): Promise<AuthDto.Response> {
+    const user = await this.usersService.findOneByEmail(email);
     if (!user || !(await user.comparePassword(password))) {
       throw new HttpException(
         'Username or password is invalid.',
@@ -17,12 +20,25 @@ export class AuthService {
       );
     }
 
-    return { token: tokenSign(user.id, user.email) };
+    const { id } = user;
+
+    return {
+      accessToken: this.jwtService.sign({ id, email } as AuthDto.JwtPayload),
+      tokenType: 'baerer',
+      expiresIn: new Date(new Date().valueOf() + jwtConstants.expiresIn),
+    };
   }
 
-  async register(model: AuthDto.Register): Promise<{ token: string }> {
-    const { id } = await this.userService.create(model);
+  async register(model: AuthDto.Register): Promise<AuthDto.Response> {
+    const { id } = await this.usersService.create(model);
 
-    return { token: tokenSign(id, model.email) };
+    return {
+      accessToken: this.jwtService.sign({
+        id,
+        email: model.email,
+      } as AuthDto.JwtPayload),
+      tokenType: 'baerer',
+      expiresIn: new Date(new Date().valueOf() + jwtConstants.expiresIn),
+    };
   }
 }
