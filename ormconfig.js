@@ -1,4 +1,4 @@
-const PROD = true;
+const PROD = false;
 
 const BASE_DIR = PROD ? 'dist' : 'src';
 
@@ -9,8 +9,8 @@ module.exports = {
   username: 'postgres',
   password: 'postgres',
   database: 'nestjs',
-  entities: [BASE_DIR + '/**/**.entity{.ts,.js}'],
   synchronize: false,
+  entities: [BASE_DIR + '/**/**.entity{.ts,.js}'],
   migrations: [BASE_DIR + '/migrations/*{.ts,.js}'],
   logging: PROD ? false : true,
   cli: {

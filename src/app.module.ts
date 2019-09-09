@@ -9,11 +9,20 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     CacheModule.register(),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'nestjs',
+      synchronize: false,
+      entities: [__dirname + '/**/**.entity{.ts,.js}'],
+    }),
     GraphQLModule.forRoot({
       debug: false,
       playground: true,
-      typePaths: ['./**/*.graphql'],
+      typePaths: [__dirname + '/**/*.graphql'],
       context: ({ req }) => ({ headers: req.headers }),
     }),
 
@@ -33,4 +42,8 @@ import { AuthModule } from './auth/auth.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    console.log(process.env.TYPEORM_USERNAME);
+  }
+}

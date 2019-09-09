@@ -10,7 +10,7 @@
     "migration:gen": "npm run typeorm -- migration:generate -n",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "build": "rimraf dist && tsc -p tsconfig.build.json && copyfiles \"./src/**/*.graphql\" dist/ && cp -r dist/src/* dist/ && rimraf dist/src",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:nodemon": "nodemon",
     "start:dev": "tsc-watch -p tsconfig.build.json --onSuccess \"node dist/main.js\"",
@@ -22,7 +22,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "copyfiles": "copyfiles"
   },
   "dependencies": {
     "@nestjs/common": "^6.0.0",
@@ -60,6 +61,7 @@
     "@types/node": "11.13.4",
     "@types/passport-jwt": "^3.0.1",
     "@types/supertest": "2.0.7",
+    "copyfiles": "^2.1.1",
     "jest": "24.7.1",
     "nodemon": "^1.19.2",
     "prettier": "1.17.0",
