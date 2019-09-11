@@ -1,4 +1,4 @@
-const PROD = false;
+const PROD = true;
 
 const BASE_DIR = PROD ? 'dist' : 'src';
 

@@ -5,6 +5,7 @@ import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { LoggingInterceptor, HttpErrorFilter } from './shared';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from './config/config.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AuthModule } from './auth/auth.module';
     // Modules
     UsersModule,
     AuthModule,
+    ConfigModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
@@ -42,8 +44,4 @@ import { AuthModule } from './auth/auth.module';
     },
   ],
 })
-export class AppModule {
-  constructor() {
-    console.log(process.env.TYPEORM_USERNAME);
-  }
-}
+export class AppModule {}

@@ -10,7 +10,7 @@
     "migration:gen": "npm run typeorm -- migration:generate -n",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
-    "build": "rimraf dist && tsc -p tsconfig.build.json && copyfiles \"./src/**/*.graphql\" dist/ && cp -r dist/src/* dist/ && rimraf dist/src",
+    "build": "rimraf dist && tsc -p tsconfig.build.json && copyfiles \"src/**/*.graphql\" \"src/.env*\" dist/ && cp -r dist/src/ dist/ && rimraf dist/src",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:nodemon": "nodemon",
     "start:dev": "tsc-watch -p tsconfig.build.json --onSuccess \"node dist/main.js\"",
