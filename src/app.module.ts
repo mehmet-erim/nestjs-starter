@@ -1,25 +1,19 @@
 import { Module, CacheInterceptor, CacheModule } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { LoggingInterceptor, HttpErrorFilter } from './shared';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
-
+import typeormConfig from './typeorm-config';
 @Module({
   imports: [
     CacheModule.register(),
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'nestjs',
-      synchronize: false,
+      ...typeormConfig,
       entities: [__dirname + '/**/**.entity{.ts,.js}'],
-    }),
+    } as TypeOrmModuleOptions),
     GraphQLModule.forRoot({
       debug: false,
       playground: true,
