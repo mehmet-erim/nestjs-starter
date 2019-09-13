@@ -7,10 +7,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { PassportModule } from '@nestjs/passport';
 import { FacebookStrategy } from './facebook.strategy';
+import { GoogleStrategy } from './google.strategy';
+import { ConfigModule } from '../config/config.module';
 
 @Module({
   imports: [
     UsersModule,
+    ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secretOrPrivateKey: jwtConstants.secret,
@@ -18,6 +21,6 @@ import { FacebookStrategy } from './facebook.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, FacebookStrategy],
+  providers: [AuthService, JwtStrategy, FacebookStrategy, GoogleStrategy],
 })
 export class AuthModule {}

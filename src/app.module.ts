@@ -22,9 +22,9 @@ import typeormConfig from './typeorm-config';
     }),
 
     // Modules
+    ConfigModule,
     UsersModule,
     AuthModule,
-    ConfigModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },

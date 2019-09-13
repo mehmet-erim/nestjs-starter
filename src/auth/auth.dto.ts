@@ -20,7 +20,7 @@ export namespace AuthDto {
     id: string;
   }
 
-  export interface Response {
+  export interface TokenResponse {
     accessToken: string;
     expiresIn: Date;
     tokenType: 'baerer';

@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service';
 import { AuthDto } from './auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { tokenSign } from '../shared/utils/token-utils';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +12,10 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login({ email, password }: AuthDto.Login): Promise<AuthDto.Response> {
+  async login({
+    email,
+    password,
+  }: AuthDto.Login): Promise<AuthDto.TokenResponse> {
     const user = await this.usersService.findOneByEmail(email);
     if (!user || !(await user.comparePassword(password))) {
       throw new HttpException(
@@ -22,23 +26,12 @@ export class AuthService {
 
     const { id } = user;
 
-    return {
-      accessToken: this.jwtService.sign({ id, email } as AuthDto.JwtPayload),
-      tokenType: 'baerer',
-      expiresIn: new Date(new Date().valueOf() + jwtConstants.expiresIn),
-    };
+    return tokenSign(this.jwtService, { id, email });
   }
 
-  async register(model: AuthDto.Register): Promise<AuthDto.Response> {
+  async register(model: AuthDto.Register): Promise<AuthDto.TokenResponse> {
     const { id } = await this.usersService.create(model);
 
-    return {
-      accessToken: this.jwtService.sign({
-        id,
-        email: model.email,
-      } as AuthDto.JwtPayload),
-      tokenType: 'baerer',
-      expiresIn: new Date(new Date().valueOf() + jwtConstants.expiresIn),
-    };
+    return tokenSign(this.jwtService, { id, email: model.email });
   }
 }

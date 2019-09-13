@@ -6,7 +6,7 @@ import { ConfigService } from './config.service';
     {
       provide: ConfigService,
       useValue: new ConfigService(
-        `../.env.${process.env.NODE_ENV || 'development'}`,
+        `${__dirname.slice(0, __dirname.lastIndexOf('/'))}/.env`,
       ),
     },
   ],
