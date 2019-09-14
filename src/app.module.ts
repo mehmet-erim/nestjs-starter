@@ -6,6 +6,7 @@ import { LoggingInterceptor, HttpErrorFilter } from './shared';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
+import { EventsModule } from './events/events.module';
 import typeormConfig from './typeorm-config';
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import typeormConfig from './typeorm-config';
     ConfigModule,
     UsersModule,
     AuthModule,
+    EventsModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
