@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Common } from '../models';
-import { messageConsts } from '../constants';
+import { MESSAGES } from '../constants';
 import { BaseEntity } from '../abstracts';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class BaseCrudService<T extends BaseEntity, C = any, U = any> {
 
       const { id } = await this.repository.save(data as any);
 
-      return { id, message: messageConsts.SUCCESS } as Common.Result;
+      return { id, message: MESSAGES.SUCCESS } as Common.Result;
     } catch (error) {
       throw new BadGatewayException(error);
     }
@@ -49,7 +49,7 @@ export class BaseCrudService<T extends BaseEntity, C = any, U = any> {
 
       this.repository.save(data as any);
 
-      return { id, message: messageConsts.SUCCESS } as Common.Result;
+      return { id, message: MESSAGES.SUCCESS } as Common.Result;
     } catch (error) {
       throw new BadGatewayException(error);
     }
@@ -68,7 +68,7 @@ export class BaseCrudService<T extends BaseEntity, C = any, U = any> {
       data.isDeleted = true;
       this.repository.save(data as any);
 
-      return { id, message: messageConsts.SUCCESS } as Common.Result;
+      return { id, message: MESSAGES.SUCCESS } as Common.Result;
     } catch (error) {
       throw new BadGatewayException(error);
     }
