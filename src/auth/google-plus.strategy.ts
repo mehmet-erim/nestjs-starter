@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import * as GooglePlusTokenStrategy from 'passport-google-plus-token';
 import { ConfigService } from '../config';
-import { AuthService } from './auth.service';
+import { AuthService, socialLoginValidate } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { tokenSign, generatePassword } from '../shared/utils';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './auth.dto';
+import { MESSAGES } from '../shared';
 
 @Injectable()
 export class GooglePlusStrategy extends PassportStrategy(
@@ -28,31 +29,15 @@ export class GooglePlusStrategy extends PassportStrategy(
   async validate(
     accessToken: string,
     refreshToken: string,
-    profile,
+    profile: any,
     done: Function,
   ) {
-    try {
-      // console.log(profile);
-      const email = profile.emails[0].value;
-      const name = profile.name.givenName + profile.name.familyName;
-
-      const user = await this.usersService.findOneByEmail(email);
-
-      let token: AuthDto.TokenResponse;
-      if (user) {
-        token = tokenSign(this.jwtService, { id: user.id, email: user.email });
-      } else {
-        token = await this.authService.register({
-          email,
-          name,
-          password: generatePassword(),
-        });
-      }
-
-      done(null, token);
-    } catch (err) {
-      console.log(err);
-      done(err, false);
-    }
+    await socialLoginValidate(
+      this.usersService,
+      this.jwtService,
+      this.authService,
+      profile,
+      done,
+    );
   }
 }

@@ -1,31 +1,40 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-facebook';
+import * as FacebookTokenStrategy from 'passport-facebook-token';
 import { ConfigService } from '../config';
+import { UsersService } from '../users/users.service';
+import { AuthService, socialLoginValidate } from './auth.service';
 
 @Injectable()
-export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
-  constructor(private config: ConfigService) {
+export class FacebookStrategy extends PassportStrategy(
+  FacebookTokenStrategy,
+  'facebook',
+) {
+  constructor(
+    private config: ConfigService,
+    private authService: AuthService,
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {
     super({
       clientID: config.get('FACEBOOK_CLIENT_ID'),
       clientSecret: config.get('FACEBOOK_CLIENT_SECRET'),
-      callbackURL: `${config.get('BACKEND_URL')}/auth/facebook/callback`,
     });
   }
 
-  async validate(accessToken, refreshToken, profile, done) {
-    try {
-      console.log(profile);
-
-      const jwt: string = 'placeholderJWT';
-      const user = {
-        jwt,
-      };
-
-      done(null, user);
-    } catch (err) {
-      // console.log(err)
-      done(err, false);
-    }
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: any,
+    done: Function,
+  ) {
+    await socialLoginValidate(
+      this.usersService,
+      this.jwtService,
+      this.authService,
+      profile,
+      done,
+    );
   }
 }

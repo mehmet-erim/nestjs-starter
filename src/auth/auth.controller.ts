@@ -3,16 +3,14 @@ import {
   Controller,
   HttpCode,
   Post,
-  Get,
-  UseGuards,
   Req,
-  Res,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '../config';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './auth.dto';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
-import { ConfigService } from '../config';
 
 @Controller('auth')
 export class AuthController {
@@ -33,40 +31,15 @@ export class AuthController {
     return this.authService.login(model);
   }
 
-  @Get('facebook')
+  @Post('facebook')
   @UseGuards(AuthGuard('facebook'))
-  facebookLogin() {
-    // initiates the facebook OAuth2 login flow
-  }
-
-  @Get('facebook/callback')
-  @UseGuards(AuthGuard('facebook'))
-  facebookLoginCallback(@Req() req, @Res() res) {
-    this.redirectToFront(req, res);
+  facebookLogin(@Req() req) {
+    return req.user;
   }
 
   @Post('google')
   @UseGuards(AuthGuard('google'))
   googleLogin(@Req() req) {
-    console.log(req.user);
     return req.user;
-  }
-
-  @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
-  googleLoginCallback(@Req() req, @Res() res) {
-    this.redirectToFront(req, res);
-  }
-
-  redirectToFront(req, res) {
-    if (req.user) {
-      res.redirect(
-        `${this.config.get('SOCIAL_LOGIN_REDIRECT_URL')}/?token=${Buffer.from(
-          JSON.stringify(req.user),
-        ).toString('base64')}`,
-      );
-    } else {
-      res.redirect(`${this.config.get('SOCIAL_LOGIN_REDIRECT_URL')}/?token=`);
-    }
   }
 }
