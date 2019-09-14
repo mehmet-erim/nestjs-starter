@@ -1,15 +1,14 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '../config';
+import { tokenSign } from '../shared/utils/token-utils';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './auth.dto';
-import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
-import { tokenSign } from '../shared/utils/token-utils';
-
-@Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
+    private usersService: UsersService,
+    private jwtService: JwtService,
+    private config: ConfigService,
   ) {}
 
   async login({

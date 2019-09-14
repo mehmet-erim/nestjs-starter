@@ -45,10 +45,11 @@ export class AuthController {
     this.redirectToFront(req, res);
   }
 
-  @Get('google')
+  @Post('google')
   @UseGuards(AuthGuard('google'))
-  googleLogin() {
-    // initiates the google OAuth2 login flow
+  googleLogin(@Req() req) {
+    console.log(req.user);
+    return req.user;
   }
 
   @Get('google/callback')

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-google-oauth20';
+import * as GooglePlusTokenStrategy from 'passport-google-plus-token';
 import { ConfigService } from '../config';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -9,7 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './auth.dto';
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+export class GooglePlusStrategy extends PassportStrategy(
+  GooglePlusTokenStrategy,
+  'google',
+) {
   constructor(
     private config: ConfigService,
     private authService: AuthService,
@@ -19,20 +22,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: config.get('GOOGLE_CLIENT_ID'),
       clientSecret: config.get('GOOGLE_CLIENT_SECRET'),
-      callbackURL: `${config.get('BACKEND_URL')}/auth/google/callback`,
-      passReqToCallback: true,
-      scope: ['profile', 'email'],
     });
   }
 
   async validate(
-    request: any,
     accessToken: string,
     refreshToken: string,
     profile,
     done: Function,
   ) {
     try {
+      // console.log(profile);
       const email = profile.emails[0].value;
       const name = profile.name.givenName + profile.name.familyName;
 
