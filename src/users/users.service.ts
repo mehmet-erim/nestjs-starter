@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as jwt from 'jsonwebtoken';
 import { Repository } from 'typeorm';
+import { AuthDto } from '../auth/auth.dto';
 import { BaseCrudService } from '../shared';
-import { Users } from './users.entity';
 import { UsersDto } from './users.dto';
+import { Users } from './users.entity';
 
 @Injectable()
 export class UsersService extends BaseCrudService<
@@ -12,9 +14,18 @@ export class UsersService extends BaseCrudService<
   UsersDto.Update
 > {
   constructor(
-    @InjectRepository(Users) protected userRepository: Repository<Users>,
+    // private jwtService: JwtService,
+    @InjectRepository(Users)
+    protected userRepository: Repository<Users>,
   ) {
     super(userRepository);
+  }
+
+  async findMe(token: string) {
+    token = token.split(' ')[1];
+    const payload = jwt.decode(token) as AuthDto.JwtPayload;
+
+    return this.findOne(payload.id);
   }
 
   async findAll(): Promise<Users[]> {
