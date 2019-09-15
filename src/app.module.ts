@@ -1,13 +1,15 @@
-import { Module, CacheInterceptor, CacheModule } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
-import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
-import { LoggingInterceptor, HttpErrorFilter } from './shared';
-import { UsersModule } from './users/users.module';
+import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { jwtConstants } from './auth/constants';
 import { ConfigModule } from './config/config.module';
 import { EventsModule } from './events/events.module';
+import { HttpErrorFilter, LoggingInterceptor } from './shared';
 import typeormConfig from './typeorm-config';
+import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     CacheModule.register(),

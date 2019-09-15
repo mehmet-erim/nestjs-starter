@@ -1,15 +1,15 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '../config';
+import { generatePassword, MESSAGES } from '../shared';
 import { tokenSign } from '../shared/utils/token-utils';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './auth.dto';
-import { MESSAGES, generatePassword } from '../shared';
+
+@Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private config: ConfigService,
   ) {}
 
   async login({
