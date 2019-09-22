@@ -32,6 +32,11 @@ export class AuthController {
     return req.user;
   }
 
+  /* Sample body:
+  {
+   "access_token": "EAAiA3zbngkUBANbYx13gs0Dr1gT6Hc..."
+  } 
+*/
   @Post('google')
   @UseGuards(AuthGuard('google'))
   googleLogin(@Req() req) {
