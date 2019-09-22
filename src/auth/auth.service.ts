@@ -1,6 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpService,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { generatePassword, MESSAGES } from '../shared';
+import * as fse from 'fs-extra';
+import { MulterFile } from '../files/files';
+import { generatePassword, MESSAGES, uuid } from '../shared';
 import { tokenSign } from '../shared/utils/token-utils';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './auth.dto';
@@ -40,13 +47,15 @@ export async function socialLoginValidate(
   usersService: UsersService,
   jwtService: JwtService,
   authService: AuthService,
+  httpService: HttpService,
   profile: any,
   done: Function,
 ) {
   try {
-    // console.log(profile);
+    console.log(profile);
     const email = profile.emails[0].value;
     const name = profile.name.givenName + profile.name.familyName;
+    const photo = ((profile.photos || [])[0] || { value: null }).value;
 
     if (!email) {
       done(
@@ -75,9 +84,53 @@ export async function socialLoginValidate(
       });
     }
 
+    if ((!user || !user.file) && photo) {
+      const file = await downloadImage(httpService, photo);
+      const userId = (jwtService.decode(
+        token.accessToken,
+      ) as AuthDto.JwtPayload).id;
+      await usersService.uploadAvatar((file as any) as MulterFile, userId);
+    }
+
     done(null, token);
   } catch (err) {
     console.error(err);
     throw new HttpException(MESSAGES.AN_ERROR_OCCURRED, HttpStatus.BAD_REQUEST);
   }
+}
+
+async function downloadImage(
+  httpService: HttpService,
+  photo: string,
+): Promise<Partial<MulterFile>> {
+  const date = new Date().valueOf();
+  const writer = fse.createWriteStream(`./uploads/${date}.jpeg`);
+
+  if (photo.indexOf('=s50')) {
+    photo = photo.replace('=s50', '');
+  }
+
+  if (photo.indexOf('/s50')) {
+    photo = photo.replace('/s50', '');
+  }
+
+  const response = await httpService.axiosRef({
+    url: photo,
+    method: 'GET',
+    responseType: 'stream',
+  });
+
+  response.data.pipe(writer);
+
+  return new Promise((resolve, reject) => {
+    writer.on('finish', () => {
+      resolve({
+        destination: './uploads/',
+        filename: `${date}.jpeg`,
+        originalname: uuid(),
+        size: 0,
+      });
+    });
+    writer.on('error', reject);
+  });
 }

@@ -28,9 +28,12 @@ export class UsersService extends BaseCrudService<
   async findById(id: string): Promise<Users> {
     const user = await this.findOne(id, ['file']);
 
-    user.avatar = `${this.config.get('BACKEND_URL')}/users/avatar/${
-      user.file.storageName
-    }`;
+    if (user.file) {
+      user.avatar = `${this.config.get('BACKEND_URL')}/users/avatar/${
+        user.file.storageName
+      }`;
+    }
+
     delete user.file;
     return user;
   }
@@ -41,9 +44,12 @@ export class UsersService extends BaseCrudService<
 
     const user = await this.findOne(payload.id, ['file']);
 
-    user.avatar = `${this.config.get('BACKEND_URL')}/users/avatar/${
-      user.file.storageName
-    }`;
+    if (user.file) {
+      user.avatar = `${this.config.get('BACKEND_URL')}/users/avatar/${
+        user.file.storageName
+      }`;
+    }
+
     delete user.file;
     return user;
   }
@@ -72,9 +78,18 @@ export class UsersService extends BaseCrudService<
   async findOneByEmail(email: string): Promise<Users> {
     return this.userRepository
       .createQueryBuilder('user')
+      .leftJoin('user.file', 'file', 'file.isDeleted = :isDeleted', {
+        isDeleted: false,
+      })
       .where('user.isDeleted = :isDeleted', { isDeleted: false })
       .andWhere('user.email = :email', { email })
-      .select(['user.id', 'user.name', 'user.email', 'user.password'])
+      .select([
+        'user.id',
+        'user.name',
+        'user.email',
+        'user.password',
+        'file.storageName',
+      ])
       .getOne();
   }
 

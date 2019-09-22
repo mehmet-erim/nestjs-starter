@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpService } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import * as FacebookTokenStrategy from 'passport-facebook-token';
@@ -16,6 +16,7 @@ export class FacebookStrategy extends PassportStrategy(
     private authService: AuthService,
     private usersService: UsersService,
     private jwtService: JwtService,
+    private httpService: HttpService,
   ) {
     super({
       clientID: config.get('FACEBOOK_CLIENT_ID'),
@@ -33,6 +34,7 @@ export class FacebookStrategy extends PassportStrategy(
       this.usersService,
       this.jwtService,
       this.authService,
+      this.httpService,
       profile,
       done,
     );

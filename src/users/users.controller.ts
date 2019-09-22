@@ -72,7 +72,6 @@ export class UsersController {
       res.write(image, 'binary');
       res.end();
     } catch (error) {
-      console.error(error);
       throw new HttpException(MESSAGES.IMAGE_NOT_FOUND, 412);
     }
   }

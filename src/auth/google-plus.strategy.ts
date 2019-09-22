@@ -1,4 +1,9 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  HttpService,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import * as GooglePlusTokenStrategy from 'passport-google-plus-token';
 import { ConfigService } from '../config';
@@ -19,6 +24,7 @@ export class GooglePlusStrategy extends PassportStrategy(
     private authService: AuthService,
     private usersService: UsersService,
     private jwtService: JwtService,
+    private httpService: HttpService,
   ) {
     super({
       clientID: config.get('GOOGLE_CLIENT_ID'),
@@ -36,6 +42,7 @@ export class GooglePlusStrategy extends PassportStrategy(
       this.usersService,
       this.jwtService,
       this.authService,
+      this.httpService,
       profile,
       done,
     );
