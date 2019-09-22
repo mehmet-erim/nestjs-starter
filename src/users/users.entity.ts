@@ -1,6 +1,7 @@
-import { Column, Entity, BeforeInsert } from 'typeorm';
-import { BaseEntity } from '../shared';
 import * as bcrypt from 'bcryptjs';
+import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Files } from '../files/files.entity';
+import { BaseEntity } from '../shared';
 
 @Entity()
 export class Users extends BaseEntity {
@@ -13,6 +14,16 @@ export class Users extends BaseEntity {
   @Column({ select: false })
   password: string;
 
+  @Column('uuid', { nullable: true, select: false })
+  fileId: string;
+
+  @OneToOne(type => Files, files => files.user, {
+    nullable: true,
+    cascade: true,
+  })
+  @JoinColumn({ name: 'fileId' })
+  file: Files;
+
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
@@ -21,4 +32,6 @@ export class Users extends BaseEntity {
   async comparePassword(attempt: string) {
     return bcrypt.compare(attempt, this.password);
   }
+
+  avatar: string;
 }

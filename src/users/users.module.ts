@@ -4,17 +4,10 @@ import { UsersController } from './users.controller';
 import { Users } from './users.entity';
 import { UsersResolver } from './users.resolver';
 import { UsersService } from './users.service';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/constants';
+import { ConfigModule } from '../config/config.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Users]),
-    JwtModule.register({
-      secretOrPrivateKey: jwtConstants.secret,
-      signOptions: { expiresIn: '7d' },
-    }),
-  ],
+  imports: [TypeOrmModule.forFeature([Users]), ConfigModule],
   providers: [UsersService, UsersResolver],
   controllers: [UsersController],
   exports: [UsersService],

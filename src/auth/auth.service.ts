@@ -78,6 +78,6 @@ export async function socialLoginValidate(
     done(null, token);
   } catch (err) {
     console.error(err);
-    throw new HttpException(MESSAGES.AN_ERROR_OCCURED, HttpStatus.BAD_REQUEST);
+    throw new HttpException(MESSAGES.AN_ERROR_OCCURRED, HttpStatus.BAD_REQUEST);
   }
 }

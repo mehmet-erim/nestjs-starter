@@ -1,6 +1,6 @@
 import typeormConfig from './src/typeorm-config';
 
-const PROD = true;
+const PROD = false;
 
 const BASE_DIR = PROD ? 'dist' : 'src';
 
