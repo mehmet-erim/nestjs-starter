@@ -7,4 +7,5 @@ export const MESSAGES = {
   IMAGE_NOT_FOUND: 'Image not found.',
   ONLY_IMAGE_ALLOWED: 'Only png, jpg, jpeg images are allowed.',
   USER_NOT_FOUND: 'User not found.',
+  EMAIL_EXIST: 'Email address already taken.',
 };

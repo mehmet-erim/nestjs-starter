@@ -42,8 +42,8 @@ export class UsersController {
   }
 
   @Get('me')
-  findMe(@Headers('authorization') token: string) {
-    return this.userService.findMe(token);
+  findMe(@Headers('authorization') accessToken: string) {
+    return this.userService.findMe(accessToken);
   }
 
   @Post()
@@ -51,15 +51,16 @@ export class UsersController {
     return this.userService.create(model);
   }
 
-  @Post('avatar/:id')
+  @Post('avatar')
   @UseInterceptors(
     FileInterceptor('avatar', { fileFilter, storage: MULTER_STORAGE }),
   )
   uploadFile(
     @UploadedFile() avatar,
-    @Param() { id }: CommonValidators.IdParamValidator,
+    @Headers('authorization') accessToken: string,
   ) {
-    return this.userService.uploadAvatar(avatar, id);
+    console.log(avatar);
+    return this.userService.uploadAvatar(avatar, accessToken);
   }
 
   @Get('avatar/:img')
@@ -74,6 +75,11 @@ export class UsersController {
     } catch (error) {
       throw new HttpException(MESSAGES.IMAGE_NOT_FOUND, 412);
     }
+  }
+
+  @Delete('avatar')
+  async deleteAvatar(@Headers('authorization') accessToken: string) {
+    return this.userService.deleteAvatar(accessToken);
   }
 
   @Get(':id')

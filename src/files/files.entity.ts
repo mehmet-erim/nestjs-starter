@@ -10,6 +10,9 @@ export class Files extends BaseEntity {
   @Column()
   storageName: string;
 
+  @Column()
+  destination: string;
+
   @Column({ type: 'numeric' })
   size: number;
 

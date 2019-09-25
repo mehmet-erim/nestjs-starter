@@ -5,14 +5,10 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { EventsModule } from './events/events.module';
+import { FilesModule } from './files/files.module';
 import { HttpErrorFilter, LoggingInterceptor } from './shared';
 import typeormConfig from './typeorm-config';
 import { UsersModule } from './users/users.module';
-import {
-  FilesInterceptor,
-  FileInterceptor,
-  MulterModule,
-} from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -31,6 +27,7 @@ import {
     // Modules
     ConfigModule,
     UsersModule,
+    FilesModule,
     AuthModule,
     EventsModule,
   ],

@@ -5,9 +5,10 @@ import {
   Logger,
   HttpException,
   HttpStatus,
+  InternalServerErrorException,
 } from '@nestjs/common';
 
-const fse = require('fs-extra');
+import * as fse from 'fs-extra';
 
 interface ErrorLogModel {
   message: any;
@@ -49,13 +50,23 @@ export class HttpErrorFilter implements ExceptionFilter {
       );
     }
 
-    const logFilePath = '../../../error-logs.txt';
+    const logFilePath = `./logs/error-logs.txt`;
     let content = '';
+    let notExist: boolean;
 
-    if (fse.existsSync(logFilePath)) {
+    if (fse.pathExistsSync('./logs')) {
       content = await fse.readFile(logFilePath).toString();
+      notExist = false;
+    } else {
+      notExist = true;
     }
-    content += { status, ...errorResponse, time: new Date() };
+    content +=
+      '\n' + JSON.stringify({ status, ...errorResponse, time: new Date() });
+
+    if (notExist) {
+      await fse.mkdir(`./logs`);
+      await fse.createFile(logFilePath);
+    }
     await fse.writeFile(logFilePath, content);
 
     response.status(status).json(errorResponse);
