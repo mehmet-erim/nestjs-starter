@@ -3,6 +3,7 @@ import {
   HttpService,
   HttpStatus,
   Injectable,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as fse from 'fs-extra';

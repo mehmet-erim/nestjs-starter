@@ -32,10 +32,9 @@ export class UsersService extends BaseCrudService<
   }
 
   async create(model: UsersDto.Create): Promise<Common.Result> {
-    const existUser = this.findOneByEmail(model.email);
-
+    const existUser = await this.findOneByEmail(model.email);
     if (existUser) {
-      throw new BadGatewayException(MESSAGES.EMAIL_EXIST);
+      throw new BadRequestException(MESSAGES.EMAIL_EXIST);
     }
 
     return super.create(model);
