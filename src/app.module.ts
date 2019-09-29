@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { EventsModule } from './events/events.module';
 import { FilesModule } from './files/files.module';
+import { RolesModule } from './roles/roles.module';
+import { SeederModule } from './seeder/seeder.module';
 import { HttpErrorFilter, LoggingInterceptor } from './shared';
 import typeormConfig from './typeorm-config';
 import { UsersModule } from './users/users.module';
@@ -16,6 +18,7 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot({
       ...typeormConfig,
       entities: [__dirname + '/**/**.entity{.ts,.js}'],
+      logging: ['query', 'error'],
     } as TypeOrmModuleOptions),
     GraphQLModule.forRoot({
       debug: false,
@@ -30,6 +33,8 @@ import { UsersModule } from './users/users.module';
     FilesModule,
     AuthModule,
     EventsModule,
+    RolesModule,
+    SeederModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
