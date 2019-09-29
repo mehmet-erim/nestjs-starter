@@ -53,7 +53,6 @@ export async function socialLoginValidate(
   done: Function,
 ) {
   try {
-    console.log(profile);
     const email = profile.emails[0].value;
     const name = profile.name.givenName + profile.name.familyName;
     const photo = ((profile.photos || [])[0] || { value: null }).value;
@@ -95,7 +94,6 @@ export async function socialLoginValidate(
 
     done(null, token);
   } catch (err) {
-    console.error(err);
     throw new HttpException(MESSAGES.AN_ERROR_OCCURRED, HttpStatus.BAD_REQUEST);
   }
 }

@@ -1,7 +1,16 @@
 import * as bcrypt from 'bcryptjs';
-import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Files } from '../files/files.entity';
 import { BaseEntity } from '../shared';
+import { Roles } from '../roles/roles.entity';
 
 @Entity()
 export class Users extends BaseEntity {
@@ -23,6 +32,10 @@ export class Users extends BaseEntity {
   })
   @JoinColumn({ name: 'fileId' })
   file: Files;
+
+  @ManyToMany(type => Roles)
+  @JoinTable()
+  roles: Roles[];
 
   @BeforeInsert()
   async hashPassword() {

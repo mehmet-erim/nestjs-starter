@@ -1,4 +1,14 @@
-import { IsNotEmpty, IsEmail } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsUUID,
+  ValidateNested,
+  IsArray,
+  IsDefined,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
 export namespace UsersDto {
   export class Create {
     @IsNotEmpty()
@@ -10,6 +20,12 @@ export namespace UsersDto {
 
     @IsNotEmpty()
     password: string;
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => Role)
+    roles?: Role[];
   }
 
   export class Update {
@@ -19,5 +35,11 @@ export namespace UsersDto {
     @IsNotEmpty()
     @IsEmail()
     email: string;
+  }
+
+  export class Role {
+    @IsNotEmpty()
+    @IsUUID()
+    id: string;
   }
 }

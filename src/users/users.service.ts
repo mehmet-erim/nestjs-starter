@@ -15,6 +15,7 @@ import { BaseCrudService, MESSAGES, Common } from '../shared';
 import { UsersDto } from './users.dto';
 import { Users } from './users.entity';
 import { FilesService } from '../files/files.service';
+import { Roles } from '../roles/roles.entity';
 
 @Injectable()
 export class UsersService extends BaseCrudService<
@@ -37,7 +38,11 @@ export class UsersService extends BaseCrudService<
       throw new BadRequestException(MESSAGES.EMAIL_EXIST);
     }
 
-    return super.create(model);
+    const user = new Users();
+
+    this.userRepository.merge(user, model);
+
+    return super.create(user);
   }
 
   async findById(id: string): Promise<Users> {
@@ -75,8 +80,17 @@ export class UsersService extends BaseCrudService<
       .leftJoin('user.file', 'file', 'file.isDeleted = :isDeleted', {
         isDeleted: false,
       })
+      .leftJoin('user.roles', 'roles', 'roles.isDeleted = :isDeleted', {
+        isDeleted: false,
+      })
       .where('user.isDeleted = :isDeleted', { isDeleted: false })
-      .select(['user.id', 'user.name', 'user.email', 'file.storageName'])
+      .select([
+        'user.id',
+        'user.name',
+        'user.email',
+        'file.storageName',
+        'roles',
+      ])
       .getMany();
 
     return (users.map(user => ({

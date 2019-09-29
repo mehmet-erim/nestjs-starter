@@ -59,7 +59,6 @@ export class UsersController {
     @UploadedFile() avatar,
     @Headers('authorization') accessToken: string,
   ) {
-    console.log(avatar);
     return this.userService.uploadAvatar(avatar, accessToken);
   }
 
