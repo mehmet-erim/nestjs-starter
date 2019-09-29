@@ -15,22 +15,22 @@ export class SeederService {
 
   async seed() {
     let admin = await this.rolesRepo.findOne({
-      where: { isDeleted: false, name: 'adamin' },
+      where: { isDeleted: false, name: 'admin' },
     });
 
     if (!admin) {
-      const insertResult = await this.rolesRepo.insert({ name: 'adamin' });
+      const insertResult = await this.rolesRepo.insert({ name: 'admin' });
       admin = insertResult.generatedMaps[0] as Roles;
     }
 
     let adminUser = await this.usersRepo.findOne({
-      where: { isDeleted: false, email: 'info2@mehmeterim.com' },
+      where: { isDeleted: false, email: 'info@mehmeterim.com' },
     });
 
     if (!adminUser) {
       const model = {
         name: 'admin',
-        email: 'info2@mehmeterim.com',
+        email: 'info@mehmeterim.com',
         password: 'test1234',
         roles: [admin],
       } as Users;
