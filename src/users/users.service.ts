@@ -46,7 +46,7 @@ export class UsersService extends BaseCrudService<
   }
 
   async findById(id: string): Promise<Users> {
-    const user = await this.findOne(id, ['file']);
+    const user = await this.findOne(id, ['file', 'roles']);
 
     if (user.file) {
       user.avatar = `${this.config.get('BACKEND_URL')}/users/avatar/${

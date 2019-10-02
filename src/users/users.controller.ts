@@ -19,6 +19,8 @@ import { Response } from 'express';
 import * as fse from 'fs-extra';
 import * as multer from 'multer';
 import * as path from 'path';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { MulterFile } from '../files/files';
 import { CommonValidators, MESSAGES } from '../shared';
 import { UsersDto } from './users.dto';
@@ -26,13 +28,13 @@ import { UsersService } from './users.service';
 
 const MULTER_STORAGE = multer.diskStorage({
   destination: './uploads/',
-  filename: function(req, file, cb) {
+  filename: (req, file, cb) => {
     cb(null, `${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
 @Controller('users')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
@@ -47,6 +49,7 @@ export class UsersController {
   }
 
   @Post()
+  @Roles('admin')
   create(@Body() model: UsersDto.Create) {
     return this.userService.create(model);
   }
@@ -87,6 +90,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @Roles('admin')
   update(
     @Param() { id }: CommonValidators.IdParamValidator,
     @Body() model: UsersDto.Update,
@@ -95,6 +99,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @Roles('admin')
   delete(@Param() { id }: CommonValidators.IdParamValidator) {
     return this.userService.delete(id);
   }
